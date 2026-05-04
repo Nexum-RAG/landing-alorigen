@@ -16,7 +16,7 @@
     --text: #4a3f38;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html { scroll-behavior: smooth; }
 
@@ -88,14 +88,7 @@
     margin-bottom: 1.5rem;
     display: flex; align-items: center; gap: 0.8rem;
   }
-.hero-location {
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--sand);
-    margin-bottom: 1.5rem;
-    padding-left: 38px;
-  }
+
   .hero-tag::before {
     content: '';
     display: block; width: 30px; height: 1px;
@@ -105,7 +98,7 @@
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(3rem, 5vw, 5rem);
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.1;
     color: var(--dark);
     margin-bottom: 1.2rem;
@@ -1223,8 +1216,7 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-content">
-    <div class="hero-tag">Terapeuta Holística &amp; Coach Neurobiológica</div>
-    <div class="hero-location">Gonnet &amp; Online</div>
+    <div class="hero-tag">Terapeuta Holística · Gonnet &amp; Online</div>
     <h1 class="hero-title">
       Encuentra<br/>tu <em>paz</em><br/>interior
     </h1>
@@ -1323,7 +1315,7 @@
 <section id="testimonios">
   <div class="section-header fade-up">
     <div class="section-tag">Experiencias</div>
-    <h2 class="section-title">Lo que dicen personas que <em>acompaño</em></h2>
+    <h2 class="section-title">Lo que dicen mis <em>clientes</em></h2>
     <div class="section-divider"></div>
   </div>
 
@@ -1342,6 +1334,18 @@
         <div class="form-group">
           <label>Ciudad</label>
           <input type="text" id="t-ciudad" placeholder="Ej: La Plata, Buenos Aires"/>
+        </div>
+        <div class="form-group">
+          <label>Tipo de terapia</label>
+          <select id="t-terapia">
+            <option value="">Seleccioná una opción</option>
+            <option>Barras de Access</option>
+            <option>Coach Neurobiológica</option>
+            <option>Sanación Pleyadiana</option>
+            <option>Sesión con caballos</option>
+            <option>Sesión online</option>
+            <option>Otro</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Puntuación</label>
@@ -1409,21 +1413,21 @@
     <a href="https://caras.perfil.com/noticias/caras-like/al-origen-loli-pascualetti.phtml" target="_blank" class="pn-card">
       <div class="pn-number">02</div>
       <div class="pn-medio">Revista Caras</div>
-      <div class="pn-titulo">Mirar tu inconsciente a través de los ojos de un caballo, es un acto de valentía y transformación</div>
+      <div class="pn-titulo">Al Origen — Loli Pascualetti</div>
       <div class="pn-cta">Leer nota →</div>
     </a>
 
     <a href="https://caras.perfil.com/noticias/caras-like/loli-pascualetti-al-origen-e.phtml" target="_blank" class="pn-card">
       <div class="pn-number">03</div>
       <div class="pn-medio">Revista Caras</div>
-      <div class="pn-titulo">Inmersos en el camino</div>
+      <div class="pn-titulo">Loli Pascualetti — Al Origen</div>
       <div class="pn-cta">Leer nota →</div>
     </a>
 
     <a href="https://caras.perfil.com/noticias/caras-like/si-quieres-paz-en-el-mundo-primero-encuentrala-en-ti.phtml" target="_blank" class="pn-card">
       <div class="pn-number">04</div>
       <div class="pn-medio">Revista Caras</div>
-      <div class="pn-titulo">Si quieres Paz en el mundo, ¡primero encuéntrala en tí!</div>
+      <div class="pn-titulo">Si querés paz en el mundo, ¡primero encontrala en vos!</div>
       <div class="pn-cta">Leer nota →</div>
     </a>
 
@@ -1548,28 +1552,19 @@
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
   // ── TESTIMONIOS ──────────────────────────────────────────────
-  const STORAGE_KEY = 'alorigen_testimonios_v1';
-
-  let selectedStars = 5;
-
-  // Stars interaction
-  const starSpans = document.querySelectorAll('#starsInput span');
-  starSpans.forEach(s => {
-    s.addEventListener('mouseover', () => highlightStars(+s.dataset.val));
-    s.addEventListener('click', () => { selectedStars = +s.dataset.val; highlightStars(selectedStars); });
-    document.getElementById('starsInput').addEventListener('mouseleave', () => highlightStars(selectedStars));
-  });
-
-  function highlightStars(n) {
-    starSpans.forEach(s => s.classList.toggle('active', +s.dataset.val <= n));
-  }
-  highlightStars(5);
+  const SUPABASE_URL = 'https://cwwklnxnukpcqqcwjoef.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3d2tsbnhudWtwY3FxY3dqb2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4ODQ1MDcsImV4cCI6MjA5MzQ2MDUwN30._2jdJgCr1oecg1EUvxVc7MMOl520_LvoqH23iyTdt0c';
 
   async function loadTestimonios() {
     try {
-      const res = await window.storage.get(STORAGE_KEY, true);
-      const list = res ? JSON.parse(res.value) : [];
-      renderTestimonios(list);
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/testimonios?select=*&order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const list = await res.json();
+      renderTestimonios(Array.isArray(list) ? list : []);
     } catch(e) {
       renderTestimonios([]);
     }
@@ -1578,29 +1573,17 @@
   function renderTestimonios(list) {
     const feed = document.getElementById('testimoniosFeed');
     const empty = document.getElementById('testimoniosEmpty');
-    if (!list.length) {
-      empty.style.display = 'block';
-      return;
-    }
-    empty.style.display = 'none';
-    // Remove old cards
     feed.querySelectorAll('.testimonio-card').forEach(c => c.remove());
-    // Render newest first
-    [...list].reverse().forEach(t => {
+    if (!list.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    list.forEach(t => {
       const card = document.createElement('div');
       card.className = 'testimonio-card';
-      const stars = '★'.repeat(t.stars) + '☆'.repeat(5 - t.stars);
       card.innerHTML = `
         <div class="tc-header">
-          <div class="tc-info">
-            <div class="tc-nombre">${t.nombre}</div>
-            <div class="tc-meta">${t.ciudad || ''}</div>
-          </div>
-          <div class="tc-stars">${stars}</div>
+          <div class="tc-nombre">${t.nombre}</div>
         </div>
-        ${t.terapia ? `<div class="tc-terapia">${t.terapia}</div>` : ''}
         <div class="tc-texto">"${t.opinion}"</div>
-        <div class="tc-fecha">${t.fecha}</div>
       `;
       feed.appendChild(card);
     });
@@ -1609,28 +1592,25 @@
   document.getElementById('testimonioForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const nuevo = {
-      nombre:  document.getElementById('t-nombre').value.trim(),
-      ciudad:  document.getElementById('t-ciudad').value.trim(),
-      stars:   selectedStars,
-      opinion: document.getElementById('t-opinion').value.trim(),
-      fecha:   new Date().toLocaleDateString('es-AR', { year:'numeric', month:'long', day:'numeric' })
+      nombre: document.getElementById('t-nombre').value.trim(),
+      opinion: document.getElementById('t-opinion').value.trim()
     };
-
     try {
-      let list = [];
-      try {
-        const res = await window.storage.get(STORAGE_KEY, true);
-        if (res) list = JSON.parse(res.value);
-      } catch(_) {}
-      list.push(nuevo);
-      await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
-      renderTestimonios(list);
+      await fetch(`${SUPABASE_URL}/rest/v1/testimonios`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(nuevo)
+      });
       this.reset();
-      selectedStars = 5;
-      highlightStars(5);
       const success = document.getElementById('formSuccess');
       success.style.display = 'block';
       setTimeout(() => success.style.display = 'none', 4000);
+      loadTestimonios();
     } catch(err) {
       alert('Hubo un error al guardar. Intentá de nuevo.');
     }
@@ -1638,8 +1618,6 @@
 
   loadTestimonios();
   // ─────────────────────────────────────────────────────────────
-
 </script>
-
 </body>
 </html>
