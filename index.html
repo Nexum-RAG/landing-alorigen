@@ -1566,6 +1566,7 @@
       card.innerHTML = `
         <div class="tc-header">
           <div class="tc-nombre">${t.nombre}</div>
+          <div class="tc-meta">${t.ciudad || ''}</div>
         </div>
         <div class="tc-texto">"${t.opinion}"</div>
       `;
@@ -1577,6 +1578,7 @@
     e.preventDefault();
     const nuevo = {
       nombre: document.getElementById('t-nombre').value.trim(),
+      ciudad: document.getElementById('t-ciudad').value.trim(),
       opinion: document.getElementById('t-opinion').value.trim()
     };
     try {
