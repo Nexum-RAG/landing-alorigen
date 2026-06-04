@@ -1379,7 +1379,7 @@
   <div class="prensa-logos fade-up">
     <div class="prensa-logo-item">
       <div class="prensa-logo-name">Revista Caras</div>
-      <div class="prensa-logo-count">4 notas</div>
+      <div class="prensa-logo-count">5 notas</div>
     </div>
     <div class="prensa-logo-sep"></div>
     <div class="prensa-logo-item">
@@ -1423,6 +1423,13 @@
       <div class="pn-number">05</div>
       <div class="pn-medio">Diplomatics News</div>
       <div class="pn-titulo">Lo que vivís no es el problema, es el mensaje</div>
+      <div class="pn-cta">Leer nota →</div>
+    </a>
+
+    <a href="https://caras.perfil.com/noticias/caras-like/el-camino-hacia-el-origen-del-ser.phtml" target="_blank" class="pn-card">
+      <div class="pn-number">06</div>
+      <div class="pn-medio">Revista Caras</div>
+      <div class="pn-titulo">El camino hacia el origen del ser</div>
       <div class="pn-cta">Leer nota →</div>
     </a>
 
@@ -1578,12 +1585,35 @@
     });
   }
 
-  document.getElementById('testimonioForm').addEventListener('submit', async function(e) {
+  // Stars interaction
+let selectedStars = 0;
+document.querySelectorAll('#starsInput span').forEach(star => {
+  star.addEventListener('click', function() {
+    selectedStars = parseInt(this.dataset.val);
+    document.querySelectorAll('#starsInput span').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= selectedStars);
+    });
+  });
+  star.addEventListener('mouseover', function() {
+    const val = parseInt(this.dataset.val);
+    document.querySelectorAll('#starsInput span').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+    });
+  });
+  star.addEventListener('mouseout', function() {
+    document.querySelectorAll('#starsInput span').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= selectedStars);
+    });
+  });
+});
+
+document.getElementById('testimonioForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const nuevo = {
       nombre: document.getElementById('t-nombre').value.trim(),
       ciudad: document.getElementById('t-ciudad').value.trim(),
-      opinion: document.getElementById('t-opinion').value.trim()
+      opinion: document.getElementById('t-opinion').value.trim(),
+      estrellas: selectedStars || 5
     };
     try {
       await fetch(`${SUPABASE_URL}/rest/v1/testimonios`, {
